@@ -1,5 +1,14 @@
 import torch
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
+
+"""
+数据加载脚本，数据28分割成测试训练集
+流程：
+读取文件->
+解析数据成[input_id, label_id]对的类数据->
+random_split切分数据集->
+传入DataLoader
+"""
 
 
 def load_vocab(vocab_path):
@@ -31,7 +40,7 @@ class DataGenerator:
             # 获取句子和标签
             for line in f:
                 line_l = line.split(',')
-                sentence = line_l[2] + line_l[3]
+                sentence = line_l[2]
                 self.sentences.append(sentence)
                 self.labels.append(line_l[1])
             # 整理成数字序列
@@ -68,12 +77,17 @@ class DataGenerator:
 # 用DataLoader类封装数据
 def load_dataset(config, shuffle=True):
     dg = DataGenerator(config)
-    dl = DataLoader(dg, batch_size=config['batch_size'], shuffle=shuffle)
-    return dl
+    train_size = int(0.8 * len(dg))
+    test_size = len(dg) - train_size
+    train_dataset, test_dataset = random_split(dg, [train_size, test_size])
+    train_dataset = DataLoader(train_dataset, batch_size=config['batch_size'], shuffle=shuffle)
+    test_dataset = DataLoader(test_dataset, batch_size=config['batch_size'], shuffle=shuffle)
+    return train_dataset, test_dataset
 
 
 if __name__ == '__main__':
     import sys
+
     sys.path.append("..")
     from config import config
 
@@ -84,8 +98,9 @@ if __name__ == '__main__':
     # DG = DataGenerator(config)
 
     # 检查数据样式
-    dl = load_dataset(config)
-    for train_x, train_y in dl:
-        break
-    print(len(dl))
-    print(train_x.shape, train_y.shape)
+    train_dataset, test_dataset = load_dataset(config)
+    for dataset in [train_dataset, test_dataset]:
+        for x, y in dataset:
+            break
+        print(len(dataset))
+        print(x.shape, y.shape)
