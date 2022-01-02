@@ -3,7 +3,9 @@ import torch.nn as nn
 from torch.optim import Adam, SGD
 from transformers import BertModel
 
-
+"""
+定义各种模型
+"""
 class Model(nn.Module):
     def __init__(self, config):
         super(Model, self).__init__()
@@ -11,7 +13,7 @@ class Model(nn.Module):
         hidden_size = config['hidden_size']
         vocab_size = config['vocab_size'] + 1  # 词嵌入的维度从1开始算
         class_num = config['class_num']
-        model_type = config["model_type"]
+        model_type = config['model_type']
         self.use_bert = False
         self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
         if model_type == 'lstm':
@@ -146,11 +148,11 @@ class BertMidLayer(nn.Module):
 
 # 设置优化器
 def select_optimizer(config, model):
-    optimizer = config["optimizer"]
-    learning_rate = config["learning_rate"]
-    if optimizer == "adam":
+    optimizer = config['optimizer']
+    learning_rate = config['learning_rate']
+    if optimizer == 'adam':
         return Adam(model.parameters(), lr=learning_rate)
-    elif optimizer == "sgd":
+    elif optimizer == 'sgd':
         return SGD(model.parameters(), lr=learning_rate)
 
 

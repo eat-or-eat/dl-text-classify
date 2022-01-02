@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
+
 class EvalData:
     def __init__(self, config, model, logger):
         self.config = config
@@ -19,7 +20,7 @@ class EvalData:
         self.logger = logger
 
     def eval(self, epoch, dataset):
-        self.logger.info("第%d轮模型效果测试：" % epoch)
+        self.logger.info('第%d轮模型效果测试：' % epoch)
         self.model.eval()
         self.avg_f1 = []
         for index, batch_data in enumerate(dataset):
@@ -48,7 +49,7 @@ class EvalData:
 
     def plot_and_save(self, epoch, train_f1s, eval_f1s, losses):
         best_f1 = max(eval_f1s)
-        pic_path = os.path.join(self.config["model_path"] + self.config['model_type'])
+        pic_path = os.path.join(self.config['model_path'] + self.config['model_type'])
         save_flag = False
         names = os.listdir(pic_path)
         for name in names:
@@ -71,5 +72,3 @@ class EvalData:
             plt.title('训练曲线 best eval=%f' % best_f1)
             plt.legend()
             plt.savefig(os.path.join(pic_path, "report-%s-%f.png" % (self.config['model_type'], best_f1)))
-
-

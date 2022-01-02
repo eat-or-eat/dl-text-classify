@@ -40,22 +40,23 @@ def main(config):
             optimizer.step()
             train_loss.append(loss.item())
             if index % int(len(train_dataset) / 3) == 0:
-                # logger.info("batch loss %f" % loss)
+                # logger.info('batch loss %f' % loss)
                 pass
         train_loss = np.mean(train_loss)
-        logger.info("第%d轮模型loss: %f" % (epoch, np.mean(train_loss)))
+        logger.info('第%d轮模型loss: %f' % (epoch, np.mean(train_loss)))
         losses.append(train_loss)
         train_f1 = evaluator.eval(epoch, train_dataset)
         train_f1s.append(train_f1)
         eval_f1 = evaluator.eval(epoch, test_dataset)
         eval_f1s.append(eval_f1)
+        # 这个保存模型还可以优化，这里只是保存了这一轮参数里面最好的
         if eval_f1 > best_f1:
             best_f1 = eval_f1
             model_path = os.path.join(config['model_path'] + config['model_type'])
             # 创建保存模型的目录
             if not os.path.exists(model_path):
                 os.makedirs(model_path)
-            pth_path = os.path.join(config['model_path'] + config['model_type'], "best.pth")
+            pth_path = os.path.join(config['model_path'] + config['model_type'], 'best.pth')
             torch.save(model.state_dict(), pth_path)
     evaluator.plot_and_save(epoch, train_f1s, eval_f1s, losses)
     used_time = time.time() - start_time
@@ -78,14 +79,14 @@ if __name__ == '__main__':
 
     model_results = []
     # 'lstm', 'gru', 'rnn', 'cnn', 'gated_cnn', 'rcnn', 'bert', 'bert_lstm', 'bert_mid'
-    for model in ['bert']:
+    for model in ['cnn']:
         results = []
         config['model_type'] = model
-        for lr in [1e-3]:  # 1e-2,1e-3,1e-4
+        for lr in [1e-2]:  # 1e-2, 1e-3, 1e-4
             config['learning_rate'] = lr
             for hidden_size in [32]:  # 32, 64, 128, 256
                 config['hidden_size'] = hidden_size
-                for opt in ['adam', 'sgd']:  # 'adam', 'sgd'
+                for opt in ['adam']:  # 'adam', 'sgd'
                     config['optimizer'] = opt
                     print('当前配置:\n', config)
                     result_dict = main(config)
