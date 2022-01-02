@@ -111,7 +111,7 @@ bert模型|配置文件|字表引用：[在这个网页直接下载然后按照�
 
 ### ③.整体训练结果
 
-数据截取于:'./output/model/total_train_result_data.csv'
+[原始数据](https://github.com/eat-or-eat/dl-text-classify/blob/main/output/model/total_train_result_data.csv)
 
 
 |    | model_type | learning_rate | hidden_size | optimizer | used_time   | best_f1     |
